@@ -16,7 +16,13 @@ class BluePlanItemCreate(BluePlanItemBase):
 
 class BluePlanItem(BluePlanItemBase):
     id: int
-    orange_plan_items: List["OrangePlanItem"] = []
+    orange_plan_items: List["OrangePlanItemInBluePlanItem"] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+class OrangePlanItemInBluePlanItem(BaseModel):
+    id: int
+    name: str
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -48,7 +54,13 @@ class OrangePlanItem(OrangePlanItemBase):
     id: int
     project_id: int
     milestones: List["Milestone"] = []
-    blue_plan_items: List[BluePlanItem] = []
+    blue_plan_items: List["BluePlanItemInOrangePlanItem"] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+class BluePlanItemInOrangePlanItem(BaseModel):
+    id: int
+    name: str
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -71,3 +83,5 @@ class Milestone(MilestoneBase):
 Project.model_rebuild()
 BluePlanItem.model_rebuild()
 OrangePlanItem.model_rebuild()
+BluePlanItemInOrangePlanItem.model_rebuild()
+OrangePlanItemInBluePlanItem.model_rebuild()
