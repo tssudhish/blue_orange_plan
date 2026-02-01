@@ -15,19 +15,19 @@ There is a need to create a tool which allows program managers to manage and bri
 ## Blue-Orange Plan
 Some of the key features of the Blue Orange Plan which are as follows:
 1. Many Blue Plan items can be satisfied by Many Orange plan items. i.e. 
-    a. There could be one Blue Plan requirement which is providing inputs to many Orange Plan items.
+    -  There could be one Blue Plan requirement which is providing inputs to many Orange Plan items.
 
-    b. There could be an orange plan project which is partially satisfying many Blue Plan requirements
+    - There could be an orange plan project which is partially satisfying many Blue Plan requirements
 
-    c. There could be One Blue Plan item which is uniquely being satisfied by one Orange plan items.
+    - There could be One Blue Plan item which is uniquely being satisfied by one Orange plan items.
 
-    d. there could be a gap in the existing set of orange plan items which is do not satisfy a given blue plan requirement
+    - There could be a gap in the existing set of orange plan items which is do not satisfy a given blue plan requirement
 
 
-2. A Blue plan item provides a need date for satisfying the requirements. 
-    a. This need date can be the end date at which the requirement has to be deployed.
+2. A Blue plan item provides a need date for satisfying the requirements.
+    - This need date can be the end date at which the requirement has to be deployed.
 
-    b. All the orange plan business releases and milestones have to be within the blue plan requirement date. If an orange plan business release date goes past a need date it is considered as a "gap" in the blue-orange plan.
+    - All the orange plan business releases and milestones have to be within the blue plan requirement date. If an orange plan business release date goes past a need date it is considered as a "gap" in the blue-orange plan.
 
 
 
