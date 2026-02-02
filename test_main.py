@@ -294,3 +294,33 @@ def test_create_milestone_for_new_orange_plan_item():
     assert milestone_data["description"] == "End of Q2"
     assert milestone_data["orange_plan_item_id"] == orange_item_id
     assert "id" in milestone_data
+
+def test_import_requirements_csv():
+    csv_content = """name,description,owners,need_date,priority,category
+Imported Req 1,Description 1,"Owner A, Owner B",2025-12-01,High,Category A
+Imported Req 2,Description 2,Owner C,2025-12-02,Medium,Category B
+"""
+    files = {'file': ('test_import.csv', csv_content, 'text/csv')}
+    
+    # We use follow_redirects=False to assert the 303 redirect response specifically
+    response = client.post("/dashboard/import-requirements", files=files, follow_redirects=False)
+    assert response.status_code == 303
+    
+    # Verify the items were created by fetching the list
+    response = client.get("/blue-plan-items/")
+    items = response.json()
+    
+    imported_item_1 = next((item for item in items if item["name"] == "Imported Req 1"), None)
+    assert imported_item_1 is not None
+    assert imported_item_1["owners"] == ["Owner A", "Owner B"]
+    assert imported_item_1["need_date"] == "2025-12-01"
+
+def test_import_requirements_csv_missing_columns():
+    csv_content = """name,description
+Incomplete Req,Missing columns
+"""
+    files = {'file': ('bad_import.csv', csv_content, 'text/csv')}
+    
+    response = client.post("/dashboard/import-requirements", files=files)
+    assert response.status_code == 400
+    assert "CSV file missing required columns" in response.json()["detail"]

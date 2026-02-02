@@ -136,6 +136,11 @@ async def import_requirements(
         decoded_content = content.decode('utf-8')
         csv_reader = csv.DictReader(io.StringIO(decoded_content))
         
+        required_columns = {"name", "description", "owners", "need_date", "priority", "category"}
+        if not csv_reader.fieldnames or not required_columns.issubset(set(csv_reader.fieldnames)):
+            missing = required_columns - set(csv_reader.fieldnames or [])
+            raise HTTPException(status_code=400, detail=f"CSV file missing required columns: {', '.join(missing)}")
+
         for row in csv_reader:
             # Parse owners list from comma-separated string in CSV
             owners_raw = row.get("owners", "")
