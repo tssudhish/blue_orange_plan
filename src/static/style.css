@@ -110,3 +110,27 @@ header p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
 }
 
 .empty-state { padding: 2rem; text-align: center; color: #888; font-style: italic; }
+
+/* Form Styles */
+.add-form { display: flex; flex-direction: column; gap: 15px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group label { font-weight: 500; font-size: 0.9rem; color: #555; }
+.form-group input, .form-group select, .form-group textarea {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    align-self: flex-start;
+}
+.btn-primary:hover { background-color: #1565c0; }

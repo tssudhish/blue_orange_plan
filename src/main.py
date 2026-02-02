@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Form
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -6,7 +6,7 @@ from src import crud, models, schemas
 from src.database import SessionLocal, engine
 
 from fastapi import Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -100,6 +100,28 @@ def read_unmet_requirements(db: Session = Depends(get_db)):
 # Setup templates and static files
 templates = Jinja2Templates(directory="src/templates")
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
+@app.post("/dashboard/add-requirement")
+async def add_requirement_ui(
+    name: str = Form(...),
+    description: str = Form(...),
+    owners: str = Form(...),
+    need_date: str = Form(...),
+    priority: str = Form(...),
+    category: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    owners_list = [o.strip() for o in owners.split(",") if o.strip()]
+    item_data = schemas.BluePlanItemCreate(
+        name=name,
+        description=description,
+        owners=owners_list,
+        need_date=need_date,
+        priority=priority,
+        category=category
+    )
+    crud.create_blue_plan_item(db=db, blue_plan_item=item_data)
+    return RedirectResponse(url="/dashboard", status_code=303)
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def read_dashboard(request: Request, db: Session = Depends(get_db)):
