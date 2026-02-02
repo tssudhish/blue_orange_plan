@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Project Import</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+    <link rel="icon" href="{{ url_for('resources', path='/icon.png') }}">
     <style>
         .status-new { color: green; font-weight: bold; }
         .status-update { color: orange; font-weight: bold; }
@@ -14,9 +15,12 @@
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Blue-Orange Plan</h1>
-            <p>Confirm Project Import</p>
+        <div class="container header-flex">
+            <img src="{{ url_for('resources', path='/icon.png') }}" alt="Logo" class="app-logo">
+            <div>
+                <h1>Blue-Orange Plan</h1>
+                <p>Confirm Project Import</p>
+            </div>
         </div>
     </header>
 

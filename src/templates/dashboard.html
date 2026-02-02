@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blue-Orange Plan Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+    <link rel="icon" href="{{ url_for('resources', path='/icon.png') }}">
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Blue-Orange Plan</h1>
-            <p>Program Management Dashboard</p>
+        <div class="container header-flex">
+            <img src="{{ url_for('resources', path='/icon.png') }}" alt="Logo" class="app-logo">
+            <div>
+                <h1>Blue-Orange Plan</h1>
+                <p>Program Management Dashboard</p>
+            </div>
         </div>
     </header>
 
