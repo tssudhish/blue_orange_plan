@@ -38,6 +38,7 @@
             <div class="card-header tab-header">
                 <button class="tab-link active" onclick="openTab(event, 'add-req')">Add New Requirement</button>
                 <button class="tab-link" onclick="openTab(event, 'import-req')">Import CSV</button>
+                <button class="icon-btn" onclick="toggleCard(this)" title="Collapse/Expand" style="margin-left: auto;">▼</button>
             </div>
             <div class="card-body" style="padding: 1.5rem;">
                 <!-- Add Requirement Tab -->
@@ -99,6 +100,7 @@
                 <button class="view-tab-link active" onclick="openViewTab(event, 'all-items')">All Requirements</button>
                 <button class="view-tab-link" onclick="openViewTab(event, 'gap-analysis')">Gap Analysis</button>
                 <button class="view-tab-link" onclick="openViewTab(event, 'unmet-reqs')">Unmet Requirements</button>
+                <button class="icon-btn" onclick="toggleCard(this)" title="Collapse/Expand" style="margin-left: auto;">▼</button>
             </div>
             <div class="card-body">
                 <!-- All Items Tab -->
@@ -209,6 +211,17 @@
             }
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
+        }
+
+        function toggleCard(btn) {
+            var cardBody = btn.closest('.card').querySelector('.card-body');
+            if (cardBody.style.display === "none") {
+                cardBody.style.display = "block";
+                btn.innerText = "▼";
+            } else {
+                cardBody.style.display = "none";
+                btn.innerText = "▲";
+            }
         }
     </script>
 </body>
