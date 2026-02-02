@@ -92,6 +92,10 @@ def link_blue_and_orange_items(
 def get_gap_analysis(db: Session = Depends(get_db)):
     return crud.get_gap_analysis(db=db)
 
+@app.get("/.well-known/appspecific/com.chrome.devtools.json")
+def well_known_devtools():
+    return {}
+
 
 @app.get("/")
 def read_root():
