@@ -103,7 +103,7 @@ def read_unmet_requirements(db: Session = Depends(get_db)):
 # Setup templates and static files
 templates = Jinja2Templates(directory="src/templates")
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
-app.mount("/resources", StaticFiles(directory="resources"), name="resources")
+app.mount("/resources", StaticFiles(directory="src/resources"), name="resources")
 
 @app.post("/dashboard/add-requirement")
 async def add_requirement_ui(
