@@ -324,3 +324,25 @@ Incomplete Req,Missing columns
     response = client.post("/dashboard/import-requirements", files=files)
     assert response.status_code == 400
     assert "CSV file missing required columns" in response.json()["detail"]
+
+def test_export_requirements():
+    # Create a dummy item first to ensure there is data to export
+    client.post(
+        "/blue-plan-items/",
+        json={
+            "name": "Exportable Req",
+            "description": "To be exported",
+            "owners": ["Team Export"],
+            "need_date": "2025-12-31",
+            "priority": "Low",
+            "category": "Export"
+        },
+    )
+    
+    response = client.get("/dashboard/export-requirements")
+    assert response.status_code == 200
+    assert "text/csv" in response.headers["content-type"]
+    content = response.text
+    assert "name,description,owners,need_date,priority,category" in content
+    assert "Exportable Req" in content
+    assert "Team Export" in content

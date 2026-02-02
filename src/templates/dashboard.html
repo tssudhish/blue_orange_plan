@@ -93,94 +93,92 @@
             </div>
         </section>
 
-        <!-- Gap Analysis Section -->
+        <!-- Requirements Overview Section -->
         <section class="card">
-            <div class="card-header warning-header">
-                <h2>Gap Analysis (Overdue Items)</h2>
+            <div class="card-header tab-header">
+                <button class="view-tab-link active" onclick="openViewTab(event, 'all-items')">All Requirements</button>
+                <button class="view-tab-link" onclick="openViewTab(event, 'gap-analysis')">Gap Analysis</button>
+                <button class="view-tab-link" onclick="openViewTab(event, 'unmet-reqs')">Unmet Requirements</button>
             </div>
             <div class="card-body">
-                {% if gap_analysis %}
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Requirement Name</th>
-                            <th>Need Date</th>
-                            <th>Priority</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in gap_analysis %}
-                        <tr>
-                            <td>{{ item.name }}</td>
-                            <td class="date-cell">{{ item.need_date }}</td>
-                            <td><span class="badge">{{ item.priority }}</span></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <p class="empty-state">No gaps detected. All requirements are on track.</p>
-                {% endif %}
-            </div>
-        </section>
+                <!-- All Items Tab -->
+                <div id="all-items" class="view-tab-content">
+                    <div style="padding: 1rem; display: flex; justify-content: flex-end; border-bottom: 1px solid var(--border-color);">
+                        <a href="/dashboard/export-requirements" class="btn-primary" style="text-decoration: none; font-size: 0.85rem; padding: 6px 12px;">Export CSV</a>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Need Date</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in blue_items %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.category }}</td>
+                                <td class="date-cell">{{ item.need_date }}</td>
+                                <td>{{ item.priority }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-        <!-- Unmet Requirements Section -->
-        <section class="card">
-            <div class="card-header danger-header">
-                <h2>Unmet Requirements (No Coverage)</h2>
-            </div>
-            <div class="card-body">
-                {% if unmet_requirements %}
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Requirement Name</th>
-                            <th>Need Date</th>
-                            <th>Category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in unmet_requirements %}
-                        <tr>
-                            <td>{{ item.name }}</td>
-                            <td class="date-cell">{{ item.need_date }}</td>
-                            <td>{{ item.category }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <p class="empty-state">All requirements are covered by at least one Orange Plan item.</p>
-                {% endif %}
-            </div>
-        </section>
+                <!-- Gap Analysis Tab -->
+                <div id="gap-analysis" class="view-tab-content" style="display: none;">
+                    {% if gap_analysis %}
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Requirement Name</th>
+                                <th>Need Date</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in gap_analysis %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td class="date-cell">{{ item.need_date }}</td>
+                                <td><span class="badge">{{ item.priority }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="empty-state">No gaps detected. All requirements are on track.</p>
+                    {% endif %}
+                </div>
 
-        <!-- All Items Section -->
-        <section class="card">
-            <div class="card-header">
-                <h2>All Blue Plan Requirements</h2>
-            </div>
-            <div class="card-body">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Need Date</th>
-                            <th>Priority</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in blue_items %}
-                        <tr>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.category }}</td>
-                            <td class="date-cell">{{ item.need_date }}</td>
-                            <td>{{ item.priority }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <!-- Unmet Requirements Tab -->
+                <div id="unmet-reqs" class="view-tab-content" style="display: none;">
+                    {% if unmet_requirements %}
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Requirement Name</th>
+                                <th>Need Date</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in unmet_requirements %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td class="date-cell">{{ item.need_date }}</td>
+                                <td>{{ item.category }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="empty-state">All requirements are covered by at least one Orange Plan item.</p>
+                    {% endif %}
+                </div>
             </div>
         </section>
     </div>
@@ -192,6 +190,20 @@
                 tabcontent[i].style.display = "none";
             }
             tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openViewTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("view-tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("view-tab-link");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }

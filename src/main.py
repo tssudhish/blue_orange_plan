@@ -8,7 +8,7 @@ from src import crud, models, schemas
 from src.database import SessionLocal, engine
 
 from fastapi import Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -157,6 +157,33 @@ async def import_requirements(
             crud.create_blue_plan_item(db=db, blue_plan_item=item_data)
             
     return RedirectResponse(url="/dashboard", status_code=303)
+
+@app.get("/dashboard/export-requirements")
+def export_requirements(db: Session = Depends(get_db)):
+    # Fetch all items (using a high limit to ensure we get everything)
+    items = crud.get_blue_plan_items(db, limit=10000)
+    
+    stream = io.StringIO()
+    csv_writer = csv.writer(stream)
+    
+    # Write Header
+    csv_writer.writerow(["name", "description", "owners", "need_date", "priority", "category"])
+    
+    # Write Data
+    for item in items:
+        owners_str = ", ".join(item.owners) if item.owners else ""
+        csv_writer.writerow([
+            item.name,
+            item.description,
+            owners_str,
+            item.need_date,
+            item.priority,
+            item.category
+        ])
+    
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=requirements_export.csv"
+    return response
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def read_dashboard(request: Request, db: Session = Depends(get_db)):
