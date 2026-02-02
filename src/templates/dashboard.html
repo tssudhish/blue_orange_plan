@@ -33,6 +33,25 @@
             </div>
         </div>
 
+        <!-- Import Requirements Section -->
+        <section class="card">
+            <div class="card-header">
+                <h2>Import Requirements (CSV)</h2>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+                <form action="/dashboard/import-requirements" method="post" enctype="multipart/form-data" class="add-form">
+                    <div class="form-group">
+                        <label for="file">Select CSV File</label>
+                        <input type="file" id="file" name="file" accept=".csv" required>
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            Required columns: name, need_date (YYYY-MM-DD), priority, category, owners, description
+                        </small>
+                    </div>
+                    <button type="submit" class="btn-primary">Upload and Import</button>
+                </form>
+            </div>
+        </section>
+
         <!-- Add Requirement Section -->
         <section class="card">
             <div class="card-header">

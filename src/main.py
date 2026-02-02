@@ -1,4 +1,6 @@
-from fastapi import Depends, FastAPI, HTTPException, Form
+from fastapi import Depends, FastAPI, HTTPException, Form, UploadFile, File
+import csv
+import io
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -121,6 +123,34 @@ async def add_requirement_ui(
         category=category
     )
     crud.create_blue_plan_item(db=db, blue_plan_item=item_data)
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+@app.post("/dashboard/import-requirements")
+async def import_requirements(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    if file.filename.endswith('.csv'):
+        content = await file.read()
+        # Decode bytes to string
+        decoded_content = content.decode('utf-8')
+        csv_reader = csv.DictReader(io.StringIO(decoded_content))
+        
+        for row in csv_reader:
+            # Parse owners list from comma-separated string in CSV
+            owners_raw = row.get("owners", "")
+            owners_list = [o.strip() for o in owners_raw.split(",") if o.strip()]
+            
+            item_data = schemas.BluePlanItemCreate(
+                name=row.get("name"),
+                description=row.get("description"),
+                owners=owners_list,
+                need_date=row.get("need_date"), # Expects YYYY-MM-DD
+                priority=row.get("priority"),
+                category=row.get("category")
+            )
+            crud.create_blue_plan_item(db=db, blue_plan_item=item_data)
+            
     return RedirectResponse(url="/dashboard", status_code=303)
 
 @app.get("/dashboard", response_class=HTMLResponse)
