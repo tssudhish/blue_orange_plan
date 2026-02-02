@@ -1,4 +1,4 @@
 name,description,owners,need_date,priority,category
-SSO Integration,Allow users to log in using corporate SSO,"Team Security, Team Infra",2024-12-01,High,Security
-Mobile Responsive UI,Ensure dashboard works on mobile devices,Team Frontend,2025-01-15,Medium,UX
-Weekly Reports,Automated email reports every Monday,"Team Data, Team Backend",2025-02-28,Low,Reporting
+SSO Integration,Allow users to log in using corporate SSO,"Team Security, Team Infra",2026-12-01,High,Security
+Mobile Responsive UI,Ensure dashboard works on mobile devices,Team Frontend,2027-01-15,Medium,UX
+Weekly Reports,Automated email reports every Monday,"Team Data, Team Backend",2027-02-28,Low,Reporting

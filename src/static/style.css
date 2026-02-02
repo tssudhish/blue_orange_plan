@@ -1,11 +1,11 @@
 :root {
-    --primary-blue: #1565c0;
-    --primary-orange: #ef6c00;
-    --danger-red: #c62828;
-    --bg-color: #eceff1;
+    --primary-blue: #0288d1;
+    --primary-orange: #f57c00;
+    --danger-red: #d32f2f;
+    --bg-color: #f4f6f8;
     --card-bg: #ffffff;
-    --text-color: #263238;
-    --border-color: #cfd8dc;
+    --text-color: #333333;
+    --border-color: #e0e0e0;
 }
 
 body {
@@ -14,13 +14,17 @@ body {
     color: var(--text-color);
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
-    background-color: var(--primary-blue);
-    color: white;
+    background-color: var(--card-bg);
+    color: var(--text-color);
     padding: 1rem 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .container {
@@ -30,11 +34,13 @@ header {
 }
 
 h1 { margin: 0; font-size: 1.5rem; }
+header h1 { color: var(--primary-blue); }
 header p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
 
 .main-content {
     padding-top: 2rem;
     padding-bottom: 2rem;
+    flex: 1;
 }
 
 .summary-grid {
@@ -177,5 +183,16 @@ header p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
 .app-logo {
     height: 48px;
     width: auto;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    mix-blend-mode: multiply;
 }
+
+footer {
+    background-color: var(--card-bg);
+    color: #666;
+    padding: 1.5rem 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
+
+footer p { margin: 0; font-size: 0.85rem; }

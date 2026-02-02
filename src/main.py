@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException, Form, UploadFile, File
 import csv
 import io
 import json
+import os
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -103,6 +104,8 @@ def read_unmet_requirements(db: Session = Depends(get_db)):
 # Setup templates and static files
 templates = Jinja2Templates(directory="src/templates")
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
+if not os.path.exists("src/resources"):
+    os.makedirs("src/resources")
 app.mount("/resources", StaticFiles(directory="src/resources"), name="resources")
 
 @app.post("/dashboard/add-requirement")
@@ -153,21 +156,21 @@ async def create_test_project_ui(db: Session = Depends(get_db)):
     project = crud.create_project(db=db, project=project_data)
 
     # Create Orange Plan Items (Releases)
-    # Release 1: Fits 2024 requirements (End Date: Nov 30, 2024)
+    # Release 1: Fits 2026 requirements (End Date: Nov 30, 2026)
     op_item1 = schemas.OrangePlanItemCreate(
-        name="Release 1.0 (Q4 2024)",
+        name="Release 1.0 (Q4 2026)",
         description="End of year release",
-        start_date="2024-10-01",
-        end_date="2024-11-30"
+        start_date="2026-10-01",
+        end_date="2026-11-30"
     )
     crud.create_orange_plan_item(db=db, orange_plan_item=op_item1, project_id=project.id)
 
-    # Release 2: Fits early 2025, but might gap late Feb items if delayed (End Date: Mar 15, 2025)
+    # Release 2: Fits early 2027, but might gap late Feb items if delayed (End Date: Mar 15, 2027)
     op_item2 = schemas.OrangePlanItemCreate(
-        name="Release 1.1 (Q1 2025)",
-        description="Early 2025 release",
-        start_date="2025-01-01",
-        end_date="2025-03-15"
+        name="Release 1.1 (Q1 2027)",
+        description="Early 2027 release",
+        start_date="2027-01-01",
+        end_date="2027-03-15"
     )
     crud.create_orange_plan_item(db=db, orange_plan_item=op_item2, project_id=project.id)
 

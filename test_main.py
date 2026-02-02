@@ -43,7 +43,7 @@ def test_create_blue_plan_item():
             "name": "Requirement A",
             "description": "Must handle high traffic",
             "owners": ["Team Alpha"],
-            "need_date": "2024-12-31",
+            "need_date": "2026-12-31",
             "priority": "High",
             "category": "Performance"
         },
@@ -82,8 +82,8 @@ def test_create_orange_plan_item_for_project():
         json={
             "name": "Milestone 1",
             "description": "First milestone",
-            "start_date": "2024-01-01",
-            "end_date": "2024-03-31",
+            "start_date": "2026-01-01",
+            "end_date": "2026-03-31",
         },
     )
     assert orange_item_response.status_code == 200
@@ -109,8 +109,8 @@ def test_create_milestone_for_orange_plan_item():
         json={
             "name": "Release 1",
             "description": "First release",
-            "start_date": "2024-01-01",
-            "end_date": "2024-06-30",
+            "start_date": "2026-01-01",
+            "end_date": "2026-06-30",
         },
     )
     assert orange_item_response.status_code == 200
@@ -123,7 +123,7 @@ def test_create_milestone_for_orange_plan_item():
         json={
             "name": "Q1 Milestone",
             "description": "End of Q1",
-            "date": "2024-03-31",
+            "date": "2026-03-31",
             "status": "Planned",
         },
     )
@@ -142,7 +142,7 @@ def test_link_blue_and_orange_items():
             "name": "Requirement B",
             "description": "A new requirement",
             "owners": ["Team Epsilon"],
-            "need_date": "2025-01-01",
+            "need_date": "2027-01-01",
             "priority": "Medium",
             "category": "UI",
         },
@@ -165,8 +165,8 @@ def test_link_blue_and_orange_items():
         json={
             "name": "Feature X",
             "description": "A new feature",
-            "start_date": "2024-08-01",
-            "end_date": "2024-11-30",
+            "start_date": "2026-08-01",
+            "end_date": "2026-11-30",
         },
     )
     assert orange_item_response.status_code == 200
@@ -193,7 +193,7 @@ def test_get_gap_analysis():
             "name": "Gap Requirement",
             "description": "This one has a gap",
             "owners": ["Team Gap"],
-            "need_date": "2024-06-01",
+            "need_date": "2026-06-01",
             "priority": "High",
             "category": "Backend",
         },
@@ -209,7 +209,7 @@ def test_get_gap_analysis():
             "name": "No Gap Requirement",
             "description": "This one is fine",
             "owners": ["Team NoGap"],
-            "need_date": "2025-01-01",
+            "need_date": "2027-01-01",
             "priority": "Low",
             "category": "Frontend",
         },
@@ -230,10 +230,10 @@ def test_get_gap_analysis():
     orange_item_response = client.post(
         f"/projects/{project_id}/orange-plan-items/",
         json={
-            "name": "Release 2024",
+            "name": "Release 2026",
             "description": "The only release this year",
-            "start_date": "2024-01-01",
-            "end_date": "2024-12-31",
+            "start_date": "2026-01-01",
+            "end_date": "2026-12-31",
         },
     )
     assert orange_item_response.status_code == 200
@@ -270,8 +270,8 @@ def test_create_milestone_for_new_orange_plan_item():
         json={
             "name": "Release 2",
             "description": "Second release",
-            "start_date": "2025-01-01",
-            "end_date": "2025-06-30",
+            "start_date": "2027-01-01",
+            "end_date": "2027-06-30",
         },
     )
     assert orange_item_response.status_code == 200
@@ -284,7 +284,7 @@ def test_create_milestone_for_new_orange_plan_item():
         json={
             "name": "Q2 Milestone",
             "description": "End of Q2",
-            "date": "2025-06-30",
+            "date": "2027-06-30",
             "status": "Planned",
         },
     )
@@ -297,8 +297,8 @@ def test_create_milestone_for_new_orange_plan_item():
 
 def test_import_requirements_csv():
     csv_content = """name,description,owners,need_date,priority,category
-Imported Req 1,Description 1,"Owner A, Owner B",2025-12-01,High,Category A
-Imported Req 2,Description 2,Owner C,2025-12-02,Medium,Category B
+Imported Req 1,Description 1,"Owner A, Owner B",2027-12-01,High,Category A
+Imported Req 2,Description 2,Owner C,2027-12-02,Medium,Category B
 """
     files = {'file': ('test_import.csv', csv_content, 'text/csv')}
     
@@ -313,7 +313,7 @@ Imported Req 2,Description 2,Owner C,2025-12-02,Medium,Category B
     imported_item_1 = next((item for item in items if item["name"] == "Imported Req 1"), None)
     assert imported_item_1 is not None
     assert imported_item_1["owners"] == ["Owner A", "Owner B"]
-    assert imported_item_1["need_date"] == "2025-12-01"
+    assert imported_item_1["need_date"] == "2027-12-01"
 
 def test_import_requirements_csv_missing_columns():
     csv_content = """name,description
@@ -333,7 +333,7 @@ def test_export_requirements():
             "name": "Exportable Req",
             "description": "To be exported",
             "owners": ["Team Export"],
-            "need_date": "2025-12-31",
+            "need_date": "2027-12-31",
             "priority": "Low",
             "category": "Export"
         },
