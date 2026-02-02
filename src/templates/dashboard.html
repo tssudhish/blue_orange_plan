@@ -94,6 +94,43 @@
             </div>
         </section>
 
+        <!-- Manage Projects Section -->
+        <section class="card">
+            <div class="card-header tab-header">
+                <button class="proj-tab-link active" onclick="openProjTab(event, 'add-proj')">Add New Project</button>
+                <button class="proj-tab-link" onclick="openProjTab(event, 'test-proj')">Test Data</button>
+                <button class="icon-btn" onclick="toggleCard(this)" title="Collapse/Expand" style="margin-left: auto;">▼</button>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+                <!-- Add Project Tab -->
+                <div id="add-proj" class="proj-tab-content">
+                    <form action="/dashboard/add-project" method="post" class="add-form">
+                        <div class="form-group">
+                            <label for="p_name">Project Name</label>
+                            <input type="text" id="p_name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="p_owner">Owner</label>
+                            <input type="text" id="p_owner" name="owner" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="p_description">Description</label>
+                            <textarea id="p_description" name="description" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Create Project</button>
+                    </form>
+                </div>
+
+                <!-- Test Project Tab -->
+                <div id="test-proj" class="proj-tab-content" style="display: none;">
+                    <p style="margin-bottom: 1rem; color: #555;">Create a sample project with standard releases (Q4 2024, Q1 2025) to test against requirements.</p>
+                    <form action="/dashboard/create-test-project" method="post">
+                        <button type="submit" class="btn-primary">Create Test Project</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
         <!-- Requirements Overview Section -->
         <section class="card">
             <div class="card-header tab-header">
@@ -206,6 +243,20 @@
                 tabcontent[i].style.display = "none";
             }
             tablinks = document.getElementsByClassName("view-tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openProjTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("proj-tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("proj-tab-link");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }

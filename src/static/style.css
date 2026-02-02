@@ -137,7 +137,7 @@ header p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
 
 /* Tab Styles */
 .tab-header { display: flex; gap: 20px; align-items: flex-end; }
-.tab-link, .view-tab-link {
+.tab-link, .view-tab-link, .proj-tab-link {
     background: none;
     border: none;
     font-family: inherit;
@@ -149,8 +149,8 @@ header p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
 }
-.tab-link:hover, .view-tab-link:hover { color: var(--primary-blue); }
-.tab-link.active, .view-tab-link.active { color: var(--primary-blue); border-bottom-color: var(--primary-blue); }
+.tab-link:hover, .view-tab-link:hover, .proj-tab-link:hover { color: var(--primary-blue); }
+.tab-link.active, .view-tab-link.active, .proj-tab-link.active { color: var(--primary-blue); border-bottom-color: var(--primary-blue); }
 
 .icon-btn {
     background: none;

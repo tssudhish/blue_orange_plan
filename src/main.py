@@ -125,6 +125,52 @@ async def add_requirement_ui(
     crud.create_blue_plan_item(db=db, blue_plan_item=item_data)
     return RedirectResponse(url="/dashboard", status_code=303)
 
+@app.post("/dashboard/add-project")
+async def add_project_ui(
+    name: str = Form(...),
+    description: str = Form(...),
+    owner: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    project_data = schemas.ProjectCreate(
+        name=name,
+        description=description,
+        owner=owner
+    )
+    crud.create_project(db=db, project=project_data)
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+@app.post("/dashboard/create-test-project")
+async def create_test_project_ui(db: Session = Depends(get_db)):
+    # Create Project
+    project_data = schemas.ProjectCreate(
+        name="Blue-Orange Test Project",
+        description="Standard test project for validating requirements",
+        owner="PMO Team"
+    )
+    project = crud.create_project(db=db, project=project_data)
+
+    # Create Orange Plan Items (Releases)
+    # Release 1: Fits 2024 requirements (End Date: Nov 30, 2024)
+    op_item1 = schemas.OrangePlanItemCreate(
+        name="Release 1.0 (Q4 2024)",
+        description="End of year release",
+        start_date="2024-10-01",
+        end_date="2024-11-30"
+    )
+    crud.create_orange_plan_item(db=db, orange_plan_item=op_item1, project_id=project.id)
+
+    # Release 2: Fits early 2025, but might gap late Feb items if delayed (End Date: Mar 15, 2025)
+    op_item2 = schemas.OrangePlanItemCreate(
+        name="Release 1.1 (Q1 2025)",
+        description="Early 2025 release",
+        start_date="2025-01-01",
+        end_date="2025-03-15"
+    )
+    crud.create_orange_plan_item(db=db, orange_plan_item=op_item2, project_id=project.id)
+
+    return RedirectResponse(url="/dashboard", status_code=303)
+
 @app.post("/dashboard/import-requirements")
 async def import_requirements(
     file: UploadFile = File(...),
