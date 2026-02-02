@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue-Orange Plan Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Blue-Orange Plan</h1>
+            <p>Program Management Dashboard</p>
+        </div>
+    </header>
+
+    <div class="container main-content">
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="card summary-card">
+                <h3>Total Requirements</h3>
+                <div class="number">{{ blue_items|length }}</div>
+            </div>
+            <div class="card summary-card warning">
+                <h3>Gap Analysis</h3>
+                <div class="number">{{ gap_analysis|length }}</div>
+                <p>Overdue Items</p>
+            </div>
+            <div class="card summary-card danger">
+                <h3>Unmet Requirements</h3>
+                <div class="number">{{ unmet_requirements|length }}</div>
+                <p>No Orange Plan Link</p>
+            </div>
+        </div>
+
+        <!-- Gap Analysis Section -->
+        <section class="card">
+            <div class="card-header warning-header">
+                <h2>Gap Analysis (Overdue Items)</h2>
+            </div>
+            <div class="card-body">
+                {% if gap_analysis %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Requirement Name</th>
+                            <th>Need Date</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in gap_analysis %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td class="date-cell">{{ item.need_date }}</td>
+                            <td><span class="badge">{{ item.priority }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="empty-state">No gaps detected. All requirements are on track.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Unmet Requirements Section -->
+        <section class="card">
+            <div class="card-header danger-header">
+                <h2>Unmet Requirements (No Coverage)</h2>
+            </div>
+            <div class="card-body">
+                {% if unmet_requirements %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Requirement Name</th>
+                            <th>Need Date</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in unmet_requirements %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td class="date-cell">{{ item.need_date }}</td>
+                            <td>{{ item.category }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="empty-state">All requirements are covered by at least one Orange Plan item.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- All Items Section -->
+        <section class="card">
+            <div class="card-header">
+                <h2>All Blue Plan Requirements</h2>
+            </div>
+            <div class="card-body">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Need Date</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in blue_items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.category }}</td>
+                            <td class="date-cell">{{ item.need_date }}</td>
+                            <td>{{ item.priority }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

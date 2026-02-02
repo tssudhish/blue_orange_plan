@@ -5,6 +5,11 @@ from typing import List
 from src import crud, models, schemas
 from src.database import SessionLocal, engine
 
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -91,3 +96,21 @@ def read_root():
 @app.get("/coverage/unmet", response_model=List[schemas.BluePlanItem])
 def read_unmet_requirements(db: Session = Depends(get_db)):
     return crud.get_unmet_requirements(db)
+
+# Setup templates and static files
+templates = Jinja2Templates(directory="src/templates")
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def read_dashboard(request: Request, db: Session = Depends(get_db)):
+    # Fetch data to display on the portal
+    blue_items = crud.get_blue_plan_items(db)
+    gap_analysis = crud.get_gap_analysis(db)
+    unmet_requirements = crud.get_unmet_requirements(db)
+    
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request, 
+        "blue_items": blue_items,
+        "gap_analysis": gap_analysis,
+        "unmet_requirements": unmet_requirements
+    })
