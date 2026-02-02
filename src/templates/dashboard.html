@@ -99,6 +99,7 @@
             <div class="card-header tab-header">
                 <button class="proj-tab-link active" onclick="openProjTab(event, 'add-proj')">Add New Project</button>
                 <button class="proj-tab-link" onclick="openProjTab(event, 'test-proj')">Test Data</button>
+                <button class="proj-tab-link" onclick="openProjTab(event, 'import-proj')">Import CSV</button>
                 <button class="icon-btn" onclick="toggleCard(this)" title="Collapse/Expand" style="margin-left: auto;">▼</button>
             </div>
             <div class="card-body" style="padding: 1.5rem;">
@@ -126,6 +127,20 @@
                     <p style="margin-bottom: 1rem; color: #555;">Create a sample project with standard releases (Q4 2024, Q1 2025) to test against requirements.</p>
                     <form action="/dashboard/create-test-project" method="post">
                         <button type="submit" class="btn-primary">Create Test Project</button>
+                    </form>
+                </div>
+
+                <!-- Import Project CSV Tab -->
+                <div id="import-proj" class="proj-tab-content" style="display: none;">
+                    <form action="/dashboard/import-projects/check" method="post" enctype="multipart/form-data" class="add-form">
+                        <div class="form-group">
+                            <label for="p_file">Select Project CSV File</label>
+                            <input type="file" id="p_file" name="file" accept=".csv" required>
+                            <small style="color: #666; display: block; margin-top: 5px;">
+                                Columns: project_name, project_description, project_owner, release_name, release_description, start_date, end_date
+                            </small>
+                        </div>
+                        <button type="submit" class="btn-primary">Preview Import</button>
                     </form>
                 </div>
             </div>

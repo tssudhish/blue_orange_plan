@@ -24,6 +24,9 @@ def create_project(db: Session, project: schemas.ProjectCreate):
 def get_project(db: Session, project_id: int):
     return db.query(models.Project).filter(models.Project.id == project_id).first()
 
+def get_project_by_name(db: Session, name: str):
+    return db.query(models.Project).filter(models.Project.name == name).first()
+
 def create_orange_plan_item(db: Session, orange_plan_item: schemas.OrangePlanItemCreate, project_id: int):
     db_orange_plan_item = models.OrangePlanItem(**orange_plan_item.model_dump(), project_id=project_id)
     db.add(db_orange_plan_item)
@@ -33,6 +36,32 @@ def create_orange_plan_item(db: Session, orange_plan_item: schemas.OrangePlanIte
 
 def get_orange_plan_item(db: Session, orange_plan_item_id: int):
     return db.query(models.OrangePlanItem).filter(models.OrangePlanItem.id == orange_plan_item_id).first()
+
+def get_orange_plan_item_by_name(db: Session, name: str, project_id: int):
+    return db.query(models.OrangePlanItem).filter(
+        models.OrangePlanItem.name == name, 
+        models.OrangePlanItem.project_id == project_id
+    ).first()
+
+def update_project(db: Session, project_id: int, project_data: schemas.ProjectCreate):
+    db_project = get_project(db, project_id)
+    if db_project:
+        db_project.name = project_data.name
+        db_project.description = project_data.description
+        db_project.owner = project_data.owner
+        db.commit()
+        db.refresh(db_project)
+    return db_project
+
+def update_orange_plan_item(db: Session, item_id: int, item_data: schemas.OrangePlanItemCreate):
+    db_item = get_orange_plan_item(db, item_id)
+    if db_item:
+        db_item.description = item_data.description
+        db_item.start_date = item_data.start_date
+        db_item.end_date = item_data.end_date
+        db.commit()
+        db.refresh(db_item)
+    return db_item
 
 def create_milestone(db: Session, milestone: schemas.MilestoneCreate, orange_plan_item_id: int):
     db_milestone = models.Milestone(**milestone.model_dump(), orange_plan_item_id=orange_plan_item_id)

@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException, Form, UploadFile, File
 import csv
 import io
+import json
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -169,6 +170,87 @@ async def create_test_project_ui(db: Session = Depends(get_db)):
     )
     crud.create_orange_plan_item(db=db, orange_plan_item=op_item2, project_id=project.id)
 
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+@app.post("/dashboard/import-projects/check", response_class=HTMLResponse)
+async def check_project_import(
+    request: Request,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Invalid file type. Please upload a CSV.")
+
+    content = await file.read()
+    decoded_content = content.decode('utf-8')
+    csv_reader = csv.DictReader(io.StringIO(decoded_content))
+    
+    # Group data by project
+    projects_data = {}
+    for row in csv_reader:
+        p_name = row.get("project_name")
+        if not p_name: continue
+        
+        if p_name not in projects_data:
+            projects_data[p_name] = {
+                "name": p_name,
+                "description": row.get("project_description", ""),
+                "owner": row.get("project_owner", ""),
+                "releases": []
+            }
+        
+        if row.get("release_name"):
+            projects_data[p_name]["releases"].append({
+                "name": row.get("release_name"),
+                "description": row.get("release_description", ""),
+                "start_date": row.get("start_date"),
+                "end_date": row.get("end_date")
+            })
+
+    # Compare with DB
+    changes = []
+    for p_name, p_data in projects_data.items():
+        existing_project = crud.get_project_by_name(db, p_name)
+        status = "Update" if existing_project else "New"
+        
+        changes.append({
+            "status": status,
+            "project": p_data,
+            "existing_id": existing_project.id if existing_project else None
+        })
+
+    return templates.TemplateResponse("project_import_confirm.html", {
+        "request": request,
+        "changes": changes,
+        "json_data": json.dumps(changes)
+    })
+
+@app.post("/dashboard/import-projects/confirm")
+async def confirm_project_import(
+    data: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    changes = json.loads(data)
+    
+    for item in changes:
+        p_data = item["project"]
+        project_schema = schemas.ProjectCreate(
+            name=p_data["name"], description=p_data["description"], owner=p_data["owner"]
+        )
+        
+        if item["status"] == "New":
+            project = crud.create_project(db, project_schema)
+        else:
+            project = crud.update_project(db, item["existing_id"], project_schema)
+            
+        for r_data in p_data["releases"]:
+            release_schema = schemas.OrangePlanItemCreate(**r_data)
+            existing_release = crud.get_orange_plan_item_by_name(db, r_data["name"], project.id)
+            if existing_release:
+                crud.update_orange_plan_item(db, existing_release.id, release_schema)
+            else:
+                crud.create_orange_plan_item(db, release_schema, project.id)
+                
     return RedirectResponse(url="/dashboard", status_code=303)
 
 @app.post("/dashboard/import-requirements")

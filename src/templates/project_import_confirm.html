@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Project Import</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+    <style>
+        .status-new { color: green; font-weight: bold; }
+        .status-update { color: orange; font-weight: bold; }
+        .diff-table td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+        .diff-table th { text-align: left; padding: 8px 12px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Blue-Orange Plan</h1>
+            <p>Confirm Project Import</p>
+        </div>
+    </header>
+
+    <div class="container main-content">
+        <div class="card">
+            <div class="card-header">
+                <h2>Review Changes</h2>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+                <p>Please review the projects and plans identified in the CSV file before confirming.</p>
+                
+                <table class="data-table diff-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Project Name</th>
+                            <th>Owner</th>
+                            <th>Releases (Orange Plan)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for change in changes %}
+                        <tr>
+                            <td class="status-{{ change.status|lower }}">{{ change.status }}</td>
+                            <td>
+                                <strong>{{ change.project.name }}</strong><br>
+                                <small>{{ change.project.description }}</small>
+                            </td>
+                            <td>{{ change.project.owner }}</td>
+                            <td>
+                                {% if change.project.releases %}
+                                <ul style="margin: 0; padding-left: 1.2rem;">
+                                    {% for release in change.project.releases %}
+                                    <li>
+                                        {{ release.name }} ({{ release.start_date }} to {{ release.end_date }})
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <span style="color: #999;">No releases defined</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 2rem; display: flex; gap: 10px;">
+                    <form action="/dashboard/import-projects/confirm" method="post">
+                        <input type="hidden" name="data" value="{{ json_data }}">
+                        <button type="submit" class="btn-primary">Confirm and Import</button>
+                    </form>
+                    <a href="/dashboard" class="btn-primary" style="background-color: #777; text-decoration: none; display: inline-block; padding: 10px 20px;">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
