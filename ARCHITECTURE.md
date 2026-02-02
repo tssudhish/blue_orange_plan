@@ -7,7 +7,7 @@ The Blue Orange Plan application is a program management tool designed to align 
 The system follows a standard **RESTful API** architecture using a layered approach. It separates concerns into API routing, data validation (schemas), database operations (CRUD), and data modeling.
 
 ### High-Level Components
-1.  **Client**: (Future) Web Portal / Frontend to visualize the plans.
+1.  **Client**: Web Portal / Frontend implemented using server-side rendering (Jinja2 templates) to visualize plans, manage data, and perform analysis.
 2.  **API Layer**: FastAPI application handling HTTP requests and responses.
 3.  **Service/Data Layer**: Logic to manipulate data and interact with the database.
 4.  **Database**: Relational database storing plans, projects, and mappings.
@@ -62,20 +62,33 @@ Based on the business logic described in the README and current code:
 ## 6. API Design
 The API follows REST principles.
 
-### Current Endpoints
+### Core API Endpoints
 *   `GET /`: Health check / Welcome message.
-*   `POST /blue-plan-items/`: Create a new Blue Plan requirement.
-    *   *Input*: JSON body matching `BluePlanItemCreate` schema.
-*   `GET /blue-plan-items/`: List requirements.
-    *   *Parameters*: `skip` (offset), `limit` (pagination).
-*   `GET /blue-plan-items/{item_id}`: Retrieve a specific requirement by ID.
+*   **Blue Plan**:
+    *   `POST /blue-plan-items/`: Create a new requirement.
+    *   `GET /blue-plan-items/`: List requirements.
+    *   `GET /blue-plan-items/{item_id}`: Retrieve a specific requirement.
+    *   `GET /coverage/unmet`: List requirements not covered by any Orange Plan item.
+*   **Orange Plan & Projects**:
+    *   `POST /projects/`: Create a new project.
+    *   `POST /projects/{project_id}/orange-plan-items/`: Create project milestones/releases.
+    *   `POST /orange-plan-items/{orange_plan_item_id}/milestones/`: Create detailed milestones.
+*   **Mappings & Analysis**:
+    *   `POST /mappings/blue/{blue_id}/orange/{orange_id}`: Link a Blue Item to an Orange Item.
+    *   `GET /gap-analysis/`: Compare Blue Plan "Need Dates" vs. Orange Plan "Delivery Dates".
 
-### Future Endpoints (Planned)
-*   `POST /orange-plan-items/`: Submit project milestones.
-*   `POST /projects/`: Create a new project.
-*   `POST /milestones/`: Create a new milestone.
-*   `POST /mappings/`: Link a Blue Item to an Orange Item.
-*   `GET /gap-analysis/`: A view comparing Blue Plan "Need Dates" vs. Orange Plan "Delivery Dates".
+### Dashboard & Utility Endpoints
+*   **Views**:
+    *   `GET /dashboard`: Main dashboard rendering summary cards, tables, and management forms.
+*   **Data Management**:
+    *   `POST /dashboard/add-requirement`: Form submission for new requirements.
+    *   `POST /dashboard/add-project`: Form submission for new projects.
+    *   `POST /dashboard/create-test-project`: Generates sample project and release data.
+*   **Import/Export**:
+    *   `POST /dashboard/import-requirements`: Bulk import requirements via CSV.
+    *   `GET /dashboard/export-requirements`: Export all requirements to CSV.
+    *   `POST /dashboard/import-projects/check`: Upload Project CSV and preview changes (New vs Update).
+    *   `POST /dashboard/import-projects/confirm`: Commit confirmed project changes to the database.
 
 ## 7. Business Logic & Validation
 The system is designed to handle specific program management logic:
@@ -83,3 +96,6 @@ The system is designed to handle specific program management logic:
 1.  **Gap Analysis**: The system must calculate if an Orange Plan Item's delivery date is later than the linked Blue Plan Item's need date.
 2.  **Coverage**: Identify Blue Plan items that have no linked Orange Plan items (unmet requirements).
 3.  **Partial Satisfaction**: Handle cases where a project only partially satisfies a requirement.
+4.  **Data Import/Export**:
+    *   **CSV Validation**: Ensures required columns exist before processing imports.
+    *   **Project Import Workflow**: Implements a two-step process (Check -> Confirm) to allow users to review additions and updates to projects and releases before committing to the database.
