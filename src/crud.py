@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
+from src import models, schemas
 
 def get_blue_plan_item(db: Session, blue_plan_item_id: int):
     return db.query(models.BluePlanItem).filter(models.BluePlanItem.id == blue_plan_item_id).first()
