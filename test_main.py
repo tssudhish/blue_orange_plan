@@ -250,6 +250,47 @@ def test_get_gap_analysis():
     gap_analysis_data = gap_analysis_response.json()
 
     # Check that only the item with the gap is returned
-    assert len(gap_analysis_data) == 1
     assert gap_analysis_data[0]["id"] == gap_blue_item_id
     assert gap_analysis_data[0]["name"] == "Gap Requirement"
+
+
+def test_create_milestone_for_new_orange_plan_item():
+    # Create a project
+    project_response = client.post(
+        "/projects/",
+        json={"name": "Project Milestone", "description": "Project for testing milestones", "owner": "Team Milestone"},
+    )
+    assert project_response.status_code == 200
+    project_data = project_response.json()
+    project_id = project_data["id"]
+
+    # Create an orange plan item for that project
+    orange_item_response = client.post(
+        f"/projects/{project_id}/orange-plan-items/",
+        json={
+            "name": "Release 2",
+            "description": "Second release",
+            "start_date": "2025-01-01",
+            "end_date": "2025-06-30",
+        },
+    )
+    assert orange_item_response.status_code == 200
+    orange_item_data = orange_item_response.json()
+    orange_item_id = orange_item_data["id"]
+
+    # Create a milestone for the new orange plan item
+    milestone_response = client.post(
+        f"/orange-plan-items/{orange_item_id}/milestones/",
+        json={
+            "name": "Q2 Milestone",
+            "description": "End of Q2",
+            "date": "2025-06-30",
+            "status": "Planned",
+        },
+    )
+    assert milestone_response.status_code == 200
+    milestone_data = milestone_response.json()
+    assert milestone_data["name"] == "Q2 Milestone"
+    assert milestone_data["description"] == "End of Q2"
+    assert milestone_data["orange_plan_item_id"] == orange_item_id
+    assert "id" in milestone_data

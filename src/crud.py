@@ -60,3 +60,7 @@ def get_gap_analysis(db: Session):
         .filter(models.BluePlanItem.need_date < models.OrangePlanItem.end_date)
         .all()
     )
+
+def get_unmet_requirements(db: Session):
+    # Returns Blue Plan items that do not have any associated Orange Plan items
+    return db.query(models.BluePlanItem).filter(~models.BluePlanItem.orange_plan_items.any()).all()

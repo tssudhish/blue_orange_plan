@@ -87,3 +87,7 @@ def get_gap_analysis(db: Session = Depends(get_db)):
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Blue-Orange Plan API"}
+
+@app.get("/coverage/unmet", response_model=List[schemas.BluePlanItem])
+def read_unmet_requirements(db: Session = Depends(get_db)):
+    return crud.get_unmet_requirements(db)
