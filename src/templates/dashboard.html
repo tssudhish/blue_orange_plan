@@ -33,64 +33,63 @@
             </div>
         </div>
 
-        <!-- Import Requirements Section -->
+        <!-- Manage Requirements Section -->
         <section class="card">
-            <div class="card-header">
-                <h2>Import Requirements (CSV)</h2>
+            <div class="card-header tab-header">
+                <button class="tab-link active" onclick="openTab(event, 'add-req')">Add New Requirement</button>
+                <button class="tab-link" onclick="openTab(event, 'import-req')">Import CSV</button>
             </div>
             <div class="card-body" style="padding: 1.5rem;">
-                <form action="/dashboard/import-requirements" method="post" enctype="multipart/form-data" class="add-form">
-                    <div class="form-group">
-                        <label for="file">Select CSV File</label>
-                        <input type="file" id="file" name="file" accept=".csv" required>
-                        <small style="color: #666; display: block; margin-top: 5px;">
-                            Required columns: name, need_date (YYYY-MM-DD), priority, category, owners, description
-                        </small>
-                    </div>
-                    <button type="submit" class="btn-primary">Upload and Import</button>
-                </form>
-            </div>
-        </section>
+                <!-- Add Requirement Tab -->
+                <div id="add-req" class="tab-content">
+                    <form action="/dashboard/add-requirement" method="post" class="add-form">
+                        <div class="form-group">
+                            <label for="name">Requirement Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input type="text" id="category" name="category" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">Priority</label>
+                                <select id="priority" name="priority">
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="need_date">Need Date</label>
+                                <input type="date" id="need_date" name="need_date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="owners">Owners (comma separated)</label>
+                            <input type="text" id="owners" name="owners" placeholder="Team A, Team B" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Add Requirement</button>
+                    </form>
+                </div>
 
-        <!-- Add Requirement Section -->
-        <section class="card">
-            <div class="card-header">
-                <h2>Add New Requirement</h2>
-            </div>
-            <div class="card-body" style="padding: 1.5rem;">
-                <form action="/dashboard/add-requirement" method="post" class="add-form">
-                    <div class="form-group">
-                        <label for="name">Requirement Name</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-row">
+                <!-- Import CSV Tab -->
+                <div id="import-req" class="tab-content" style="display: none;">
+                    <form action="/dashboard/import-requirements" method="post" enctype="multipart/form-data" class="add-form">
                         <div class="form-group">
-                            <label for="category">Category</label>
-                            <input type="text" id="category" name="category" required>
+                            <label for="file">Select CSV File</label>
+                            <input type="file" id="file" name="file" accept=".csv" required>
+                            <small style="color: #666; display: block; margin-top: 5px;">
+                                Required columns: name, need_date (YYYY-MM-DD), priority, category, owners, description
+                            </small>
                         </div>
-                        <div class="form-group">
-                            <label for="priority">Priority</label>
-                            <select id="priority" name="priority">
-                                <option value="High">High</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Low">Low</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="need_date">Need Date</label>
-                            <input type="date" id="need_date" name="need_date" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="owners">Owners (comma separated)</label>
-                        <input type="text" id="owners" name="owners" placeholder="Team A, Team B" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary">Add Requirement</button>
-                </form>
+                        <button type="submit" class="btn-primary">Upload and Import</button>
+                    </form>
+                </div>
             </div>
         </section>
 
@@ -185,5 +184,20 @@
             </div>
         </section>
     </div>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
 </html>
